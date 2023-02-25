@@ -2,9 +2,10 @@ from sqlalchemy import Column, String, Integer, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from config import PG_DSN
 
 
-PG_DSN = "postgresql+asyncpg://app:1234@127.0.0.1:5431/netology"
+# PG_DSN = "postgresql+asyncpg://app:1234@127.0.0.1:5431/netology"
 engine = create_async_engine(PG_DSN)
 Base = declarative_base()
 

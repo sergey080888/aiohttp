@@ -5,8 +5,8 @@ services:
   db:
     image: postgres:14.3-alpine3.15
     ports:
-     - "5431:5432"
+     - "5431:${PG_PORT}"
     environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: netology
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}

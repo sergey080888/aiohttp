@@ -1,8 +1,7 @@
 from aiohttp import web
 import json
 from db import Ad, engine, Session, Base
-from sqlalchemy.exc import IntegrityError, DBAPIError
-from typing import Type
+from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel, ValidationError
 
 
@@ -28,7 +27,7 @@ async def orm_context(app_: web.Application):
 
 async def handle_request(request):
     try:
-        # Parse the JSON data from the request using the Person model
+        # Parse the JSON data from the request using the AdValidate model
         data = await request.json()
         person = AdValidate(**data)
     except ValidationError:
