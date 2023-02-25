@@ -52,8 +52,8 @@ async def main():
         response = await session.post(
             "http://127.0.0.1:111/ads/",
             json={
-                "id": 88,
-                "title": '8',
+                "id": "gfjhfgjg",
+                "title": "8",
                 "description": "Крутое описание",
                 "owner": "Василий",
             },

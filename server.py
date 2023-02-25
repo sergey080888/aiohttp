@@ -5,15 +5,16 @@ from sqlalchemy.exc import IntegrityError, DBAPIError
 from typing import Type
 from pydantic import BaseModel, ValidationError
 
+
 class AdValidate(BaseModel):
     id: int
     title: str
     description: str
-    # creation_time = Column(DateTime, server_default=func.now(), unique=False)
     owner: str
 
 
 app = web.Application()
+
 
 async def orm_context(app_: web.Application):
     print("Start")
@@ -25,14 +26,16 @@ async def orm_context(app_: web.Application):
     print("SHUTDOWN")
 
 
-
-ERROR_TYPE = Type[web.HTTPConflict]
-
-def raise_http_error(error_class: ERROR_TYPE, message: str | dict):
-    raise error_class(
-        text=json.dumps({"status": "error", "description": message}),
-        content_type="application/json",
-    )
+async def handle_request(request):
+    try:
+        # Parse the JSON data from the request using the Person model
+        data = await request.json()
+        person = AdValidate(**data)
+    except ValidationError:
+        raise web.HTTPConflict(
+            text=json.dumps({"status": "error", "message": "content type error"}),
+            content_type="application/json",
+        )
 
 
 @web.middleware
@@ -41,10 +44,9 @@ async def session_middleware(requests: web.Request, handler):
         requests["session"] = session
         return await handler(requests)
 
+
 app.cleanup_ctx.append(orm_context)
 app.middlewares.append(session_middleware)
-# app.middlewares.append(error_middleware)
-# app = web.Application(middlewares=[session_middleware, error_middleware])
 
 
 async def get_ad(ad_id: int, session: Session):
@@ -74,6 +76,7 @@ class Advertisement(web.View):
     async def post(self):
         session = self.request["session"]
         json_data = await self.request.json()
+        a = await handle_request(self.request)
         ad = Ad(**json_data)
         session.add(ad)
         try:
