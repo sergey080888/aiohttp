@@ -61,5 +61,21 @@ async def main():
         print(response.status)
         print(await response.json())
 
+        response = await session.post(
+            "http://127.0.0.1:111/ads/",
+            json={
+                "id": 1,
+                "title": "Крутое объявление",
+                "description": "Крутое описание",
+                "owner": "Василий",
+            },
+        )
+        print(response.status)
+        print(await response.json())
+
+        response = await session.patch("http://127.0.0.1:111/ads/1/", json={"id": "5"})
+        print(response.status)
+        print(await response.json())
+
 
 asyncio.run(main())

@@ -29,7 +29,7 @@ async def handle_request(request):
     try:
         # Parse the JSON data from the request using the AdValidate model
         data = await request.json()
-        person = AdValidate(**data)
+        ad_ = AdValidate(**data)
     except ValidationError:
         raise web.HTTPConflict(
             text=json.dumps({"status": "error", "message": "content type error"}),
@@ -75,7 +75,7 @@ class Advertisement(web.View):
     async def post(self):
         session = self.request["session"]
         json_data = await self.request.json()
-        a = await handle_request(self.request)
+        await handle_request(self.request)
         ad = Ad(**json_data)
         session.add(ad)
         try:
@@ -92,6 +92,7 @@ class Advertisement(web.View):
         ad_id = int(self.request.match_info["ad_id"])
         ad = await get_ad(ad_id, self.request["session"])
         json_data = await self.request.json()
+        await handle_request(self.request)
         for field, value in json_data.items():
             setattr(ad, field, value)
         self.request["session"].add(ad)
